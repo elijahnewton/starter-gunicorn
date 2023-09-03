@@ -1,3 +1,8 @@
+import subprocess
+import sys
+
+subprocess.check_call([sys.executable, "-m", "pip", "install", "-r requirements.txt"])
+
 from flask import Flask, render_template, request, redirect, Response, flash, url_for
 from flask_sqlalchemy import SQLAlchemy
 import io, os
