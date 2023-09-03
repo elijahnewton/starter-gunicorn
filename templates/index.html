@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <title>File Share</title>
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/v4-shims.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.1.3/css/bootstrap.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://www.bootstrapsite.com/includes/css/text.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://www.bootstrapsite.com/includes/classes/navbar-brand-logo.css"
+    />
+
+    <style></style>
+    <style>
+      .section-1-styles {
+        background: linear-gradient(to right, #6a11cb 0%, #2575fc 100%);
+      }
+
+      .heading-4-styles {
+        text-align: center;
+      }
+
+      .image-5-advanced {
+        max-width: 200px;
+      }
+    </style>
+  </head>
+  <body>
+    <div
+      style="position: relative; padding-bottom: 100px"
+      id="section-1"
+      class="pb-5 section-1-styles"
+    >
+      <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+          <a class="navbar-brand navbar-brand-logo" href="/"
+            ><img
+              src="https://edge.uploader.win/images/black-and-white-4270982-1280-f03f5944.png"
+              alt=""
+              width="1023"
+              height="756" /></a
+          ><v-navbar-toggle-render></v-navbar-toggle-render
+          ><v-navbar-collapse-render
+            ><ul class="navbar-nav ms-auto">
+                {% if not current_user.is_authenticated %}
+                    <li class="nav-item">
+                      <a class="nav-link active" aria-current="page" href="/login"
+                        >Login</a
+                      >
+                    </li>
+
+                    <li class="nav-item">
+                      <a class="nav-link active" aria-current="page" href="/register"
+                        >Sign Up</a
+                      >
+                    </li>
+                {% endif %}
+                {% if current_user.is_authenticated %}
+                    <li class="nav-item">
+                      <a class="nav-link active" aria-current="page" href="/reset_pawword_request">Change Password</a>
+                    </li>
+                    <li class="nav-item">
+                      <a class="nav-link active" aria-current="page" href="/logout"
+                        >Log Out</a
+                      >
+                    </li>
+                {% endif %}    
+            </ul></v-navbar-collapse-render
+          >
+          <ul class="navbar-nav ms-auto"></ul>
+        </div>
+      </nav>
+      <div
+        class="d-flex flex-column align-items-center my-4 text-center container text-light"
+      >
+        <h3 class="display-4 fw-bold mb-5">File Share</h3>
+        <div class="lead mb-5"><p>Share with the World…</p></div>
+        <form
+          action="/upload"
+          method="post"
+          enctype="multipart/form-data"
+          class="row row-cols-lg-auto g-3 align-items-center"
+        >
+          <div>
+            <input
+              type="file"
+              class="form-control form-control-sm"
+              id="file"
+              name="file"
+            />
+          </div>
+          <button class="btn btn-primary" type="submit">Upload</button>
+        </form>
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+          <div class="container">
+            <nav class="navbar navbar-expand-lg navbar-light bg-light">
+              <div class="container"></div>
+            </nav>
+          </div>
+        </nav>
+      </div>
+      <div
+        style="
+          position: absolute;
+          left: 0px;
+          right: 0px;
+          background-size: 100% 100px;
+          height: 100px;
+          width: 100%;
+          bottom: 0px;
+          z-index: 1;
+          background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiB2aWV3Qm94PSIwIDAgMTI4MCAxNDAiIHByZXNlcnZlQXNwZWN0UmF0aW89Im5vbmUiIGhlaWdodD0iMTAwcHgiPjxnIGZpbGw9IiNmZmZmZmYiPjxwYXRoIGQ9Ik0xMjgwIDMuNEMxMDUwLjU5IDE4IDEwMTkuNCA4NC44OSA3MzQuNDIgODQuODljLTMyMCAwLTMyMC04NC4zLTY0MC04NC4zQzU5LjQuNTkgMjguMiAxLjYgMCAzLjRWMTQwaDEyODB6IiBmaWxsLW9wYWNpdHk9Ii4zIj48L3BhdGg+PHBhdGggZD0iTTAgMjQuMzFjNDMuNDYtNS42OSA5NC41Ni05LjI1IDE1OC40Mi05LjI1IDMyMCAwIDMyMCA4OS4yNCA2NDAgODkuMjQgMjU2LjEzIDAgMzA3LjI4LTU3LjE2IDQ4MS41OC04MFYxNDBIMHoiIGZpbGwtb3BhY2l0eT0iLjUiPjwvcGF0aD48cGF0aCBkPSJNMTI4MCA1MS43NmMtMjAxIDEyLjQ5LTI0Mi40MyA1My40LTUxMy41OCA1My40LTMyMCAwLTMyMC01Ny02NDAtNTctNDguODUuMDEtOTAuMjEgMS4zNS0xMjYuNDIgMy42VjE0MGgxMjgweiI+PC9wYXRoPjwvZz48L3N2Zz4=');
+        "
+        class="no-pointer-events"
+        enabled="true"
+      ></div>
+    </div>
+    <div id="section-5"><div class="container"></div></div>
+    <div id="section-4"><div class="container"></div></div>
+    <div id="section-10">
+      <div class="container my-3">
+        <h3 class="heading-4-styles">Uploaded Files:</h3>
+        <div>
+            <ul class="list-group mt-2">
+                {% for file in files %}
+                    <li class="list-group-item">
+                        {{ file.filename }}
+                        <div class="btn-group float-right" role="group" aria-label="File Actions">
+                            <a href="/download/{{ file.id }}" class="btn btn-primary btn-sm">Download</a>
+                            {% if current_user.is_authenticated and current_user.role.name == 'admin' %}
+                                <a href="/delete/{{ file.id }}" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this file?')">Delete</a>
+                            {% endif %}
+                        </div>
+                    </li>
+                {% endfor %}
+            </ul>
+      </div>
+    </div>
+    <div id="section-11" class="container"></div>
+    <div id="section-6"><div class="container"></div></div>
+    <div id="section-13">
+      <footer class="container">
+        <div class="row">
+          <div class="col-12 col-md-6">
+            <img
+              class="img-fluid image-5-advanced"
+              height="20"
+              data-src="https://edge.uploader.win/multimedia/black-and-white-4270982-1280-f03f5944.png"
+              data-lazy="true"
+              width="1023"
+            />
+            <div>
+              
+              <div><br /></div>
+            </div>
+          </div>
+          <div class="col-12 col-md-3">
+            <h5 class="my-3">Product</h5>
+            <ul class="list-group">
+                <li><a href="/about">About Us</a></li>
+                <li><a href="/privacy_policy">Privacy Policy</a></li>
+            </ul>
+            <div class="accordion"></div>
+          </div>
+        </div>
+        <div class="my-3">
+          <p style="text-align: center">© 2023 File Share . All rights reserved.</p>
+        </div>
+      </footer>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.1.1/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.lazyloadxt/1.1.0/jquery.lazyloadxt.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.lazyloadxt/1.1.0/jquery.lazyloadxt.extra.min.js"></script>
+    <script src="https://www.bootstrapsite.com/includes/js/lazy-loader.js"></script>
+    <script>
+        function showPrivacyAlert() {
+            alert("Your use of this website confirms that you agree to File Share's privacy policy.");
+        }
+        showPrivacyAlert()
+    </script>
+  </body>
+</html>

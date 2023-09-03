@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h2>Register</h2>
+  <form method="POST">
+    {{ form.hidden_tag() }}
+    <div class="form-group">
+      {{ form.username.label }}
+      {{ form.username(class="form-control") }}
+      {% for error in form.username.errors %}
+        <span class="text-danger">{{ error }}</span>
+      {% endfor %}
+    </div>
+    <div class="form-group">
+      {{ form.email.label }}
+      {{ form.email(class="form-control") }}
+      {% for error in form.email.errors %}
+        <span class="text-danger">{{ error }}</span>
+      {% endfor %}
+    </div>
+    <div class="form-group">
+      {{ form.password.label }}
+      <div class="input-group">
+        {{ form.password(class="form-control", id="passwordInput") }}
+        <div class="input-group-append">
+          <div class="input-group-text">
+            <input type="checkbox" id="showPassword">
+            <label class="form-check-label" for="showPassword">Show Password</label>
+          </div>
+        </div>
+      </div>
+      {% for error in form.password.errors %}
+        <span class="text-danger">{{ error }}</span>
+      {% endfor %}
+    </div>
+    <div class="form-group">
+      {{ form.confirm_password.label }}
+      <div class="input-group">
+        {{ form.confirm_password(class="form-control", id="confirmPasswordInput") }}
+        <div class="input-group-append">
+          <div class="input-group-text">
+            <input type="checkbox" id="showConfirmPassword">
+            <label class="form-check-label" for="showConfirmPassword">Show Password</label>
+          </div>
+        </div>
+      </div>
+      {% for error in form.confirm_password.errors %}
+        <span class="text-danger">{{ error }}</span>
+      {% endfor %}
+    </div>
+    <button type="submit" class="btn btn-primary">Register</button>
+  </form>
+  
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script>
+    $(document).ready(function() {
+        $('#showPassword').on('change', function() {
+            var passwordInput = $('#passwordInput');
+            if ($(this).is(':checked')) {
+                passwordInput.attr('type', 'text');
+            } else {
+                passwordInput.attr('type', 'password');
+            }
+        });
+
+        $('#showConfirmPassword').on('change', function() {
+            var confirmPasswordInput = $('#confirmPasswordInput');
+            if ($(this).is(':checked')) {
+                confirmPasswordInput.attr('type', 'text');
+            } else {
+                confirmPasswordInput.attr('type', 'password');
+            }
+        });
+    });
+  </script>
+{% endblock %}

@@ -1,0 +1,74 @@
+/* Reset default margin and padding */
+body, h1, h2, h3, p {
+    margin: 0;
+    padding: 0;
+}
+
+/* Set a background color and text color */
+body {
+    background-color: #f4f4f4;
+    color: #333;
+    font-family: Arial, sans-serif;
+}
+
+/* Center the content vertically and horizontally */
+.container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+/* Set maximum width for content */
+.row {
+    max-width: 800px; /* Adjust as needed */
+    margin: 0 auto;
+}
+
+/* Center align headings */
+h1, h2, h3 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+/* Add margin to list items */
+.list-group-item {
+    margin: 10px 0;
+}
+
+/* Full-width buttons */
+.btn-block {
+    width: 100%;
+}
+
+/* Navigation bar styling */
+.navbar {
+    background-color: #333;
+    color: #fff;
+    margin-bottom: 20px; /* Add spacing below navbar */
+}
+
+.navbar-brand {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.navbar-nav .nav-link {
+    color: #fff;
+    font-size: 18px;
+    padding: 10px 20px;
+}
+
+/* Stretch navigation bar across viewport width */
+.navbar-expand-lg .navbar-nav {
+    width: 100%;
+    justify-content: center;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .navbar-nav .nav-link {
+        padding: 5px 10px;
+    }
+}

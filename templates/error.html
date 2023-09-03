@@ -1,0 +1,16 @@
+{% extends "bootstrap/base.html" %}
+
+{% block title %}
+    Error
+{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="alert alert-danger" role="alert">
+        <h4 class="alert-heading">Connection Error</h4>
+        <p>There was an error connecting to the ClamAV daemon. Please try again later.</p>
+        <hr>
+        <p class="mb-0">If the problem persists, please contact support.</p>
+    </div>
+</div>
+{% endblock %}

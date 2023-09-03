@@ -1,0 +1,40 @@
+/* styles.css */
+
+/* Body background */
+body {
+    background-color: #f4f4f4;
+}
+
+/* Heading styles */
+h1 {
+    color: #333;
+}
+
+/* Form styles */
+.form-group label {
+    color: #555;
+}
+
+/* Buttons */
+.btn-primary {
+    background-color: #007bff;
+    border-color: #007bff;
+}
+
+.btn-success {
+    background-color: #28a745;
+    border-color: #28a745;
+}
+
+/* Modal styles */
+.modal-content {
+    background-color: #fff;
+    border: none;
+}
+
+/* List item styles */
+.list-group-item {
+    background-color: #fff;
+    border: none;
+}
+
