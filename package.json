@@ -1,0 +1,21 @@
+
+{
+  "name": "starter-gunicorn",
+   "version": "1.0.0",
+   "description": "",
+   "scripts": {
+       "build": "echo \"No build specified\" && exit 1",
+       "test": "echo \"No test specified\" && exit 1",
+       "start": "gunicorn app:app"
+   },
+   "repository": {
+       "type": "git",
+       "url": "git+https://github.com/elijahnewton/starter-gunicorn.git"
+   },
+   "author": "",
+   "license": "ISC",
+   "bugs": {
+       "url": "https://github.com/elijahnewton/starter-gunicorn/issues"
+   },
+   "homepage": "https://github.com/elijahnewton/starter-gunicorn#readme"
+}
