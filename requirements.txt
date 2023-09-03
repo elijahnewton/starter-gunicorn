@@ -21,7 +21,6 @@ httplib2
 idna
 itsdangerous
 Jinja2
-logging
 Mako
 MarkupSafe
 oauthlib
