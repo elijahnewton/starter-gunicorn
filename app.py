@@ -272,23 +272,6 @@ class File:
             comment=item['comment']
         ) for item in items]
     
-    
-# class Role(db.Model):
-#     id = db.Column(db.Integer, primary_key=True)
-#     name = db.Column(db.String(50), unique=True)
-#     description = db.Column(db.String(200))
-#     users = db.relationship('User', backref='role')
-
-
-# class User(db.Model, UserMixin):
-#     id = db.Column(db.Integer, primary_key=True)
-#     user_name = db.Column(db.String(100), nullable=False)
-#     email = db.Column(db.String(120), unique=True, nullable=False)
-#     password_hash = db.Column(db.String(128), nullable=False)
-#     role_id = db.Column(db.Integer, db.ForeignKey('role.id'))
-#     password_reset_token = db.Column(db.String(120))
-#     password_reset_expiration = db.Column(db.DateTime)
-
 def has_admin_privileges(user_data):
     return user_data and user_data.get('role_name', {}).get('S') == 'admin'
 
@@ -326,38 +309,6 @@ def index():
     files = [{'filename': item['filename']} for item in items]
 
     return render_template('index.html', files=files)
-
-
-# @app.route('/login', methods=['GET', 'POST'])
-# def login():
-#     form = LoginForm()
-
-#     # If the user is already authenticated, redirect to the main page
-#     if current_user.is_authenticated:
-#         return redirect('/')
-
-#     if form.validate_on_submit():
-#         email = form.email.data
-#         password = form.password.data
-#         user = User.query.filter_by(email=email).first()
-
-#         if user:
-#             print(f"Entered Password: {password}")
-#             print(f"Stored Hashed Password: {user.password_hash}")
-#             if user.check_password(password):
-#                 print("Passwords Match")
-#                 login_user(user)
-#                 flash('Logged In successfully!', 'success')
-#                 return redirect('/')
-#             else:
-#                 print("Passwords Do Not Match")
-#                 flash("Invalid email or password.", category='error')
-#         else:
-#             print("User Not Found")
-#             flash("Email is not registered. Please register first.", category='error')
-#             return redirect('/register')
-
-#     return render_template('auth/login.html', form=form)
 
 import boto3
 from boto3.dynamodb.conditions import Key
@@ -415,77 +366,8 @@ def logout():
 
 @app.route('/privacy_policy')
 def privacy_policy():
-    return render_template('privacy_policy.html')
+    return render_template('privacy_policy.html')        
 
-# register route
-# @app.route('/register', methods=['GET', 'POST'])
-# def register():
-#     form = RegistrationForm()
-#     if current_user.is_authenticated:
-#         return redirect('/')
-
-#     if request.method == 'POST':
-#         email = request.form.get('email')
-#         password = request.form.get('password')
-#         hashed_password = generate_password_hash(password)
-#         # Fetch the admin user's email from the environment variable
-#         admin_email = os.environ.get('ADMIN_USER')
-#         existing_user = User.query.filter_by(email=email).first()
-
-#         if existing_user:
-#             # Handle case where the email already exists
-#             flash('Email already registered!', 'error')
-#             redirect('/login')
-#         else:
-
-#             if request.form.get('email')== admin_email:
-#                 role = Role.query.filter_by(name='admin').first()
-
-#             else:
-#                 role = Role.query.filter_by(name='user').first()
-
-#             try:
-#                 new_user = User(user_name=request.form.get('username'), email=request.form.get('email'), password=password, role_id=role.id)
-#                 db.session.add(new_user)
-#                 db.session.commit()# Role can be 'user' or 'admin'
-#                 deleted = User.query.filter_by(name='deleted').first()
-#                 if deleted is None:
-#                     deleted = User(user_name=request.form.get('username'), email=request.form.get('email'), password=password, role_id=role.id)
-#                     db.session.add(deleted)
-#                     db.session.commit()
-#             except:
-#                 admin_role = Role.query.filter_by(name='admin').first()
-#                 if admin_role is None:
-#                     admin_role = Role(name='admin', description='Administrator Role')
-#                     db.session.add(admin_role)
-#                 user_role = Role.query.filter_by(name='user').first()
-
-#                 if user_role is None:
-#                     user_role = Role(name='user', description='Regular User Role')
-#                     db.session.add(user_role)
-
-#                 if request.form.get('email')== admin_email:
-#                     role = Role.query.filter_by(name='admin').first()
-
-#                 else:
-#                     role = Role.query.filter_by(name='user').first()
-#                 new_user = User(user_name=request.form.get('username'), email=request.form.get('email'), password=password, role_id=role.id)
-#                 db.session.add(new_user)
-#                 db.session.commit()# Role can be 'user' or 'admin'
-
-#                 # Check if "user" role exists
-#                 user_role = Role.query.filter_by(name='user').first()
-#                 if user_role is None:
-#                     user_role = Role(name='user', description='Regular User Role')
-#                     db.session.add(user_role)
-
-        
-#             flash('Account created successfully!', 'success')
-        
-#             login_user(new_user)
-#             return redirect('/')
-
-#     return render_template('auth/register.html', form = form)
 
 
 # ... other imports and app configuration ...
@@ -544,20 +426,8 @@ def register():
 
     return render_template('auth/register.html', form=form)
 
-# ... other routes and app configurations ...
-# https://youtu.be/E2QvrjtSWXE
+#... other routes and app configurations ...
 
-
-# def is_file_infected(file_path):
-#         try:
-#             cd = pyclamd.ClamdUnixSocket()
-#             scan_result = cd.scan_file(file_path)
-#             if scan_result:
-#                 return True
-#             return False
-#         except pyclamd.ConnectionError:
-#             # Handle connection error to ClamAV daemon
-#             return False
 
 def is_file_infected(file):
     try:
@@ -565,8 +435,6 @@ def is_file_infected(file):
         scan_result = cd.scan_stream(file.read())
         file.seek(0)  # Reset the file stream position to the beginning
         if scan_result:
-            # If ClamAV detects a virus, it will return a dictionary with the virus name
-            # You can handle the infected file here
             virus_name = scan_result[file.filename]
             print(f'File {file.filename} is infected with {virus_name}')
             return True
@@ -579,38 +447,6 @@ def is_file_infected(file):
         print(f'Error scanning file: {str(e)}')
         return False
 
-
-# @app.route('/upload', methods=['POST'])
-# @login_required
-# def upload():
-#     if current_user.role.name in ['admin', 'user']:
-#         if 'file' not in request.files:
-#             print(request.files)
-#             return "No file part"
-        
-#         file = request.files['file']
-        
-#         if file.filename == '':
-#             return "No selected file"
-        
-#         if file and allowed_file(file.filename):
-#             filename = secure_filename(file.filename)
-#             file_data = file.read()  # Read the binary data of the file
-            
-#             if is_file_infected(file_data):
-#                 flash('File is infected with a virus', category='error')
-#                 return redirect(request.url)
-            
-#             new_file = File(filename=filename, data=file_data, user_id=current_user.id)
-#             db.session.add(new_file)
-#             db.session.commit()
-#             flash(f'{filename} Uploaded successfully!', 'success')
-            
-#             return redirect('/')
-#         else:
-#             return "File type not allowed"
-#     else:
-#         return "Unauthorized"
 
 
 @app.route('/upload', methods=['POST'])
