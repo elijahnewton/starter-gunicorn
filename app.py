@@ -17,7 +17,7 @@ import logging
 import secrets
 import os
 import boto3
-from boto3.dynamo.conditions import Key
+from boto3.dynamodb.conditions import Key
 from botocore.exceptions import NoCredentialsError
 
 
