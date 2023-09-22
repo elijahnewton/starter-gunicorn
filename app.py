@@ -15,6 +15,8 @@ from pyclamd import ConnectionError
 from forms.forms import *
 import logging
 import secrets
+import sys
+from gunicorn.app.wsgiapp import run
 import os
 import boto3
 from boto3.dynamodb.conditions import Key
@@ -611,6 +613,12 @@ def handle_clamav_connection_error(error):
     # Render an error template or redirect with the error message
     return render_template('error.html', error_message=error_message), 500
 
-if __name__ == "__main__":
+#if __name__ == "__main__":
+#    with app.app_context():
+ #       app.run()
+
+
+if __name__ == '__main__':
     with app.app_context():
-        app.run()
+        sys.argv = "gunicorn --bind 0.0.0.0:5151 app:app".split()
+        sys.exit(run())
