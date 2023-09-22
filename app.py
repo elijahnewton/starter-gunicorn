@@ -19,7 +19,7 @@ import os
 import boto3
 from boto3.dynamodb.conditions import Key
 from botocore.exceptions import NoCredentialsError
-
+from botocore.exceptions import ClientError
 
 SECRET_KEY = os.getenv('SECRET_KEY')
 AWS_REGION = os.getenv('AWS_REGION')
