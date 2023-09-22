@@ -333,7 +333,6 @@ def login():
         password = form.password.data
 
         response = user_table.query(
-            IndexName='email-index',  # Assuming you have an index on the 'email' attribute
             KeyConditionExpression=Key('email').eq(email)
         )
 
@@ -388,7 +387,6 @@ def register():
 
         # Check if the email already exists in DynamoDB
         response = user_table.query(
-            IndexName='email-index',  # Assuming you have an index on the 'email' attribute
             KeyConditionExpression=Key('email').eq(email)
         )
 
