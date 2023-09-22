@@ -17,7 +17,7 @@ import logging
 import secrets
 import os
 import boto3
-from boto3.dynamodb.conditions import Key
+from boto3.dynamo.conditions import Key
 from botocore.exceptions import NoCredentialsError
 
 
@@ -97,25 +97,45 @@ class User(UserMixin):
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
     
-    def generate_password_reset_token(self):
-        token = secrets.token_urlsafe(32)  # Generate a random URL-safe token (you can adjust the length)
+    def generate_password_reset_token(self, token_length=32, expiration_hours=1):
+        token = secrets.token_urlsafe(token_length)
         self.password_reset_token = token
-        self.password_reset_expiration = datetime.utcnow() + timedelta(hours=1)  # Set token expiration time (e.g., 1 hour)
-        db.session.commit()
+        expiration_time = datetime.utcnow() + timedelta(hours=expiration_hours)
+        self.password_reset_expiration = expiration_time.strftime('%Y-%m-%dT%H:%M:%SZ')
+
+        # Update the DynamoDB record
+        shared_table.update_item(
+            Key={'user_id': self.user_id},
+            UpdateExpression='SET password_reset_token = :token, password_reset_expiration = :expiration',
+            ExpressionAttributeValues={
+                ':token': token,
+                ':expiration': self.password_reset_expiration
+            }
+        )
+
         return token
 
     def token_expired(self):
-        
         if self.password_reset_expiration is None:
             return True  # Token expiration is not set
-        current_time = datetime.utcnow()
-        return current_time > self.password_reset_expiration
 
-    @staticmethod
-    def get(user_id):
+        current_time = datetime.utcnow()
+        expiration_time = datetime.strptime(self.password_reset_expiration, '%Y-%m-%dT%H:%M:%SZ')
+        return current_time > expiration_time
+
+    @classmethod
+    def get(cls, user_id):
         response = shared_table.get_item(Key={'user_id': user_id})
         user_data = response.get('Item', None)
-        return User(**user_data) if user_data else None
+
+        if user_data:
+            user = cls(user_id)
+            user.password_reset_token = user_data.get('password_reset_token')
+            user.password_reset_expiration = user_data.get('password_reset_expiration')
+            return user
+        else:
+            return None
+
 
 class Role:
     def __init__(self, role_id, role_name):
