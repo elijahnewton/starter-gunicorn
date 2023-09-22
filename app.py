@@ -43,7 +43,6 @@ app.config['SECRET_KEY'] = secret_key
 app.config['SQLALCHEMY_DATABASE_URI'] ='sqlite:///' + os.path.join(basedir, 'stored_files.db')
 app.config['UPLOAD_FOLDER'] = 'uploads'
 
-dynamodb = boto3.resource('dynamodb')
 shared_table = dynamodb.Table('tan-dark-goshawkCyclicDB')
 migrate = Migrate(app, dynamodb) 
 logging.basicConfig(level=logging.ERROR)
