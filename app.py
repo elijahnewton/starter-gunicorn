@@ -265,7 +265,13 @@ def allowed_file(filename):
 # default routes
 @app.route('/', methods=["GET", "POST"])
 def index():
-    files = File.query.all()
+    # Assuming your DynamoDB table stores file information
+    response = shared_table.scan()
+    items = response.get('Items', [])
+    
+    # Transform DynamoDB items into a list of dictionaries
+    files = [{'filename': item['filename']} for item in items]
+
     return render_template('index.html', files=files)
 
 
