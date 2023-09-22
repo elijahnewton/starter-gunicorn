@@ -343,7 +343,7 @@ def login():
                 else:
                     flash("Invalid email or password.", category='error')
 
-            except ClientError as e:
+        except ClientError as e:
                 flash("Email is not registered. Please register first.", category='error')
                 return redirect('/register')
         #else:
