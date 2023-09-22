@@ -80,6 +80,59 @@ class User(UserMixin):
         self.password_hash = password_hash
         self.role_id = role_id
     @staticmethod
+    def create(user_id, username, email, password_hash, role_id):
+        # Create a new user in DynamoDB
+        dynamodb = boto3.resource('dynamodb')
+        table = dynamodb.Table('tan-dark-goshawkCyclicDB')
+
+        try:
+            table.put_item(
+                Item={
+                    'user_id': user_id,
+                    'username': username,
+                    'email': email,
+                    'password_hash': password_hash,
+                    'role_id': role_id
+                }
+            )
+        except ClientError as e:
+            # Handle any exceptions here
+            print("Error creating user:", e)
+
+    @staticmethod
+    def get(user_id):
+        # Retrieve user from DynamoDB
+        dynamodb = boto3.resource('dynamodb')
+        table = dynamodb.Table('tan-dark-goshawkCyclicDB')
+
+        try:
+            response = table.get_item(
+                Key={'user_id': user_id}
+            )
+            user_data = response.get('Item', None)
+            return User(**user_data) if user_data else None
+        except ClientError as e:
+            # Handle any exceptions here
+            print("Error getting user:", e)
+            return None
+    @staticmethod
+    def get_by_email(email):
+        # Query DynamoDB for a user by email (if you have a GSI on email)
+        dynamodb = boto3.resource('dynamodb')
+        table = dynamodb.Table('tan-dark-goshawkCyclicDB')
+
+        try:
+            response = table.query(
+                IndexName='email-index',  # Replace with your GSI name
+                KeyConditionExpression=Key('email').eq(email)
+            )
+            user_data = response.get('Items', [])[0] if response.get('Items') else None
+            return User(**user_data) if user_data else None
+        except ClientError as e:
+            # Handle any exceptions here
+            print("Error getting user by email:", e)
+            return None       
+    @staticmethod
     def get(role_id):
         response = shared_table.get_item(Key={'role_id': role_id})
         role_data = response.get('Item', None)
