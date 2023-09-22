@@ -29,8 +29,7 @@ AWS_SESSION_TOKEN = os.getenv('AWS_SESSION_TOKEN')
 # Initialize Boto3 S3 client
 s3 = boto3.client('s3', region_name=AWS_REGION)
 dynamodb = boto3.resource('dynamodb', region_name=AWS_REGION)
-user_table = dynamodb.Table('tan-dark-goshawkCyclicDB')  # Replace with your DynamoDB table name
-dynamodb = boto3.client('dynamodb', region_name=AWS_REGION)
+user_table = dynamodb.Table('tan-dark-goshawkCyclicDB')
 # ...
 
 basedir = os.path.abspath(os.path.dirname(__file__))
