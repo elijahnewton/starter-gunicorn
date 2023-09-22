@@ -209,12 +209,6 @@ def authenticate(username, password):
         return user_data
     return None
     
-# class File(db.Model):
-#     id = db.Column(db.Integer, primary_key=True)
-#     filename = db.Column(db.String(255), nullable=False)
-#     data = db.Column(db.LargeBinary, nullable=False)
-#     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-#     user = db.relationship('User', backref=db.backref('files', lazy=True))
     
 
 class File:
@@ -332,24 +326,29 @@ def login():
         email = form.email.data
         password = form.password.data
 
-        response = user_table.query(
-            KeyConditionExpression=Key('email').eq(email)
-        )
+        try:
+            response = user_table.query(
+                KeyConditionExpression=Key('email').eq(email)
+            )
 
-        if response.get('Items'):
-            user_data = response['Items'][0]
-            stored_password_hash = user_data.get('password_hash', None)
+            if response.get('Items'):
+                user_data = response['Items'][0]
+                stored_password_hash = user_data.get('password_hash', None)
 
-            if stored_password_hash and check_password_hash(stored_password_hash, password):
-                user = User(user_id=user_data['user_id'], username=user_data['username'], email=user_data['email'], password_hash=stored_password_hash, role_id=user_data['role_id'])
-                login_user(user)
-                flash('Logged In successfully!', 'success')
-                return redirect('/')
-            else:
-                flash("Invalid email or password.", category='error')
-        else:
-            flash("Email is not registered. Please register first.", category='error')
-            return redirect('/register')
+                if stored_password_hash and check_password_hash(stored_password_hash, password):
+                    user = User(user_id=user_data['user_id'], username=user_data['username'], email=user_data['email'], password_hash=stored_password_hash, role_id=user_data['role_id'])
+                    login_user(user)
+                    flash('Logged In successfully!', 'success')
+                    return redirect('/')
+                else:
+                    flash("Invalid email or password.", category='error')
+
+            except ClientError as e:
+                flash("Email is not registered. Please register first.", category='error')
+                return redirect('/register')
+        #else:
+        #    flash("Email is not registered. Please register first.", category='error')
+        #    return redirect('/register')
 
     return render_template('auth/login.html', form=form)
 
