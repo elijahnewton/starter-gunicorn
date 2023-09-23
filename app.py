@@ -425,29 +425,29 @@ def register():
         except:
             if email == admin_email:
                     role = 'admin'
-                else:
-                    role = 'user'
+            else:
+                role = 'user'
 
-                # Generate a unique user_id using secrets.token_hex()
-                user_id = secrets.token_hex(16)
+            # Generate a unique user_id using secrets.token_hex()
+            user_id = secrets.token_hex(16)
 
-                # Create a new user record in DynamoDB
-                user_data = {
-                    'user_id': user_id,
-                    'username': request.form.get('username'),
-                    'email': email,
-                    'password_hash': hashed_password,
-                    'role': role  # Role can be 'user' or 'admin'
-                }
-                user_table.put_item(Item=user_data)
+            # Create a new user record in DynamoDB
+            user_data = {
+                'user_id': user_id,
+                'username': request.form.get('username'),
+                'email': email,
+                'password_hash': hashed_password,
+                'role': role  # Role can be 'user' or 'admin'
+            }
+            user_table.put_item(Item=user_data)
 
-                flash('Account created successfully!', 'success')
+            flash('Account created successfully!', 'success')
 
-                # Log in the newly registered user
-                user = User(user_id=user_id, username=user_data['username'], email=email, password_hash=hashed_password, role=role)
-                login_user(user)
+            # Log in the newly registered user
+            user = User(user_id=user_id, username=user_data['username'], email=email, password_hash=hashed_password, role=role)
+            login_user(user)
 
-                return redirect('/')            
+            return redirect('/')            
 
     return render_template('auth/register.html', form=form)
 
