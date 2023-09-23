@@ -403,7 +403,7 @@ def register():
                     role = 'user'
 
                 # Generate a unique user_id using secrets.token_hex()
-                user_id = secrets.token_hex(16)
+                user_id = str(secrets.token_hex(16))
                 print(user_id)
                 # Create a new user record in DynamoDB
                 user_data = {
