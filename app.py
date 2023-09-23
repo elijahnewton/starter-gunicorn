@@ -422,7 +422,7 @@ def register():
                 login_user(user)
 
                 return redirect('/')
-        except:
+        except Exception as e:
             if email == admin_email:
                     role = 'admin'
             else:
