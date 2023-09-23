@@ -387,7 +387,7 @@ def register():
 
         # Check if the email already exists in DynamoDB
         try:
-            response = user_table.get_by_email(
+            response = user_table.get_item(
                 KeyConditionExpression=(Key('email').eq(email))
             )
 
