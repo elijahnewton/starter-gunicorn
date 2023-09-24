@@ -33,6 +33,48 @@ s3 = boto3.client('s3', region_name=AWS_REGION)
 dynamodb = boto3.resource('dynamodb', region_name=AWS_REGION)
 user_table = dynamodb.Table('tan-dark-goshawkCyclicDB')
 
+table = dynamodb.create_table(
+    TableName='tan-dark-goshawkCyclicDB',
+    KeySchema=[
+        {
+            'AttributeName': 'user_id',
+            'KeyType': 'HASH'
+        }
+    ],
+    AttributeDefinitions=[
+        {
+            'AttributeName': 'user_id',
+            'AttributeType': 'S'
+        },
+        {
+            'AttributeName': 'email',
+            'AttributeType': 'S'
+        }
+    ],
+    ProvisionedThroughput={
+        'ReadCapacityUnits': 5,
+        'WriteCapacityUnits': 5
+    },
+    GlobalSecondaryIndexes=[
+        {
+            'IndexName': 'email-index',
+            'KeySchema': [
+                {
+                    'AttributeName': 'email',
+                    'KeyType': 'HASH'
+                }
+            ],
+            'Projection': {
+                'ProjectionType': 'ALL'
+            },
+            'ProvisionedThroughput': {
+                'ReadCapacityUnits': 5,
+                'WriteCapacityUnits': 5
+            }
+        }
+    ]
+)
+
 basedir = os.path.abspath(os.path.dirname(__file__))
 secret_key = secrets.token_hex(16)
 
@@ -678,6 +720,6 @@ def handle_clamav_connection_error(error):
 
 if __name__ == '__main__':
     with app.app_context():
-        create_dynamodb_index()
+        # create_dynamodb_index()
         sys.argv = "gunicorn --bind 0.0.0.0:5151 app:app".split()
         sys.exit(run())
