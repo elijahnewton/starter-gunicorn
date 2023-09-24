@@ -32,6 +32,62 @@ AWS_SESSION_TOKEN = os.getenv('AWS_SESSION_TOKEN')
 s3 = boto3.client('s3', region_name=AWS_REGION)
 dynamodb = boto3.resource('dynamodb', region_name=AWS_REGION)
 user_table = dynamodb.Table('tan-dark-goshawkCyclicDB')
+
+index_name = 'email-index'
+
+try:
+    table.update(
+        AttributeDefinitions=[
+            {
+                'AttributeName': 'email',
+                'AttributeType': 'S',  # 'S' for string, adjust if needed
+            },
+        ],
+        GlobalSecondaryIndexUpdates=[
+            {
+                'Create': {
+                    'IndexName': index_name,
+                    'KeySchema': [
+                        {
+                            'AttributeName': 'email',
+                            'KeyType': 'HASH',
+                        },
+                    ],
+                    'Projection': {
+                        'ProjectionType': 'ALL',  # Adjust as needed
+                    },
+                },
+            },
+        ],
+    )
+
+    print(f'Secondary index {index_name} created successfully.')
+except Exception as e:
+    print(f'Error creating secondary index: {e}')
+
+    After creating the secondary index, you can use it to query items by email:
+
+python
+
+from botocore.exceptions import ClientError
+
+try:
+    response = table.query(
+        IndexName='email-index',
+        KeyConditionExpression=Key('email').eq(email)
+    )
+
+    if response.get('Items'):
+        # Handle the matching items
+        matching_items = response['Items']
+        # Handle or process the matching items as needed
+    else:
+        # Handle the case where no items match the query
+        # There are no items with the specified 'email' attribute value
+except ClientError as e:
+    # Handle query errors
+    print("Error querying DynamoDB:", e)
+
 # ...
 
 basedir = os.path.abspath(os.path.dirname(__file__))
@@ -329,6 +385,7 @@ def login():
 
         try:
             response = user_table.query(
+                IndexName='email-index',
                 KeyConditionExpression=Key('email').eq(email)
             )
 
@@ -388,6 +445,7 @@ def register():
         # Check if the email already exists in DynamoDB
         try:
             response = user_table.query(
+                IndexName='email-index',
                 KeyConditionExpression=Key('email').eq(email)
             )
 
