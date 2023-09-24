@@ -338,20 +338,26 @@ def login():
                 stored_password_hash = user_data.get('password_hash', None)
 
                 if stored_password_hash and check_password_hash(stored_password_hash, password):
-                    user = User(sk=user_data['sk'], username=user_data['username'], pk=user_data['pk'], password_hash=stored_password_hash, role_id=user_data['role_id'])
+                    user = User(
+                        sk=user_data['sk'],
+                        username=user_data['username'],
+                        pk=user_data['pk'],
+                        password_hash=stored_password_hash,
+                        role_id=user_data['role_id']
+                    )
                     login_user(user)
                     flash('Logged In successfully!', 'success')
                     return redirect('/')
                 else:
                     flash("Invalid email or password.", category='error')
-
-        except ClientError as e:
+            else:
+                # User not found in the table, redirect to register
                 flash("Email is not registered. Please register first.", category='error')
                 return redirect('/register')
-        #else:
-        #    flash("Email is not registered. Please register first.", category='error')
-        #    return redirect('/register')
 
+        except ClientError as e:
+            flash("An error occurred while processing your request.", category='error')
+            
     return render_template('auth/login.html', form=form)
 
 
