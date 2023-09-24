@@ -407,7 +407,7 @@ def register():
                         }   
                         user_table.put_item(Item=role_data)
                         role = 'admin'
-                    else Exception as e:
+                    except Exception as e:
                         role = 'admin'
                 else:
                     try:
@@ -417,7 +417,7 @@ def register():
                         }
                         user_table.put_item(Item=role_data)
                         role = 'user'
-                    else Exception as e:
+                    except Exception as e:
                         role = 'user'
                 
                 # Generate a unique user_id using secrets.token_hex()
