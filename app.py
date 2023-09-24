@@ -402,8 +402,8 @@ def register():
                 if email == admin_email:
                     try:
                         role_data={
-                            'role_id'=role_id,
-                            'role_name'='admin'
+                            'role_id':role_id,
+                            'role_name':'admin'
                         }   
                         user_table.put_item(Item=role_data)
                         role = 'admin'
@@ -412,8 +412,8 @@ def register():
                 else:
                     try:
                         role_data={
-                            'role_id'=role_id,
-                            'role_name'='user'
+                            'role_id':role_id,
+                            'role_name':'user'
                         }
                         user_table.put_item(Item=role_data)
                         role = 'user'
