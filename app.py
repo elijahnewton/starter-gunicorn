@@ -33,7 +33,7 @@ s3 = boto3.client('s3', region_name=AWS_REGION)
 dynamodb = boto3.resource('dynamodb', region_name=AWS_REGION)
 user_table = dynamodb.Table('tan-dark-goshawkCyclicDB')
 
-table = dynamodb.create_table(
+user_table = dynamodb.create_table(
     TableName='tan-dark-goshawkCyclicDB',
     KeySchema=[
         {
