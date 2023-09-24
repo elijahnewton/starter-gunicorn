@@ -36,7 +36,7 @@ user_table = dynamodb.Table('tan-dark-goshawkCyclicDB')
 index_name = 'email-index'
 
 try:
-    table.update(
+    user_table.update(
         AttributeDefinitions=[
             {
                 'AttributeName': 'email',
