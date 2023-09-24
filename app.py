@@ -76,7 +76,7 @@ class User(UserMixin):
     def __init__(self, user_id, username, email, password_hash, role_id):
         self.user_id = user_id
         self.username = username
-        self.email = email
+        self.pk = email
         self.password_hash = password_hash
         self.role_id = role_id
     @staticmethod
@@ -90,7 +90,7 @@ class User(UserMixin):
                 Item={
                     'user_id': user_id,
                     'username': username,
-                    'email': email,
+                    'pk': email,
                     'password_hash': password_hash,
                     'role_id': role_id
                 }
@@ -123,8 +123,8 @@ class User(UserMixin):
 
         try:
             response = table.query(
-                IndexName='email-index',  # Replace with your GSI name
-                KeyConditionExpression=Key('email').eq(email)
+                
+                KeyConditionExpression=Key('pk').eq(email)
             )
             user_data = response.get('Items', [])[0] if response.get('Items') else None
             return User(**user_data) if user_data else None
@@ -140,7 +140,7 @@ class User(UserMixin):
     
     def __init__(self, user_name, email, password,role_id):
         self.user_name = user_name
-        self.email = email
+        self.pk = email
         self.password_hash = generate_password_hash(password)
         self.role_id = role_id  # Initialize with no role
 
@@ -326,8 +326,7 @@ def login():
 
         try:
             response = user_table.query(
-                IndexName='email-index',
-                KeyConditionExpression=Key('email').eq(email)
+                KeyConditionExpression=Key('pk').eq(email)
             )
 
             if response.get('Items'):
@@ -335,7 +334,7 @@ def login():
                 stored_password_hash = user_data.get('password_hash', None)
 
                 if stored_password_hash and check_password_hash(stored_password_hash, password):
-                    user = User(user_id=user_data['user_id'], username=user_data['username'], email=user_data['email'], password_hash=stored_password_hash, role_id=user_data['role_id'])
+                    user = User(user_id=user_data['user_id'], username=user_data['username'], pk=user_data['email'], password_hash=stored_password_hash, role_id=user_data['role_id'])
                     login_user(user)
                     flash('Logged In successfully!', 'success')
                     return redirect('/')
@@ -386,8 +385,7 @@ def register():
         # Check if the email already exists in DynamoDB
         try:
             response = user_table.query(
-                IndexName='email-index',
-                KeyConditionExpression=Key('email').eq(email)
+                KeyConditionExpression=Key('pk').eq(email)
             )
 
             if response.get('Items'):
@@ -408,7 +406,7 @@ def register():
                 user_data = {
                     'user_id': user_id,
                     'username': request.form.get('username'),
-                    'email': email,
+                    'pk': email,
                     'password_hash': hashed_password,
                     'role': role  # Role can be 'user' or 'admin'
                 }
@@ -417,7 +415,7 @@ def register():
                 flash('Account created successfully!', 'success')
 
                 # Log in the newly registered user
-                user = User(user_id=user_id, username=user_data['username'], email=email, password_hash=hashed_password, role=role)
+                user = User(user_id=user_id, username=user_data['username'], pk=email, password_hash=hashed_password, role=role)
                 login_user(user)
 
                 return redirect('/')
@@ -434,7 +432,7 @@ def register():
             user_data = {
                 'user_id': user_id,
                 'username': request.form.get('username'),
-                'email': email,
+                'pk': email,
                 'password_hash': hashed_password,
                 'role': role  # Role can be 'user' or 'admin'
             }
@@ -443,7 +441,7 @@ def register():
             flash('Account created successfully!', 'success')
 
             # Log in the newly registered user
-            user = User(user_id=user_id, username=user_data['username'], email=email, password_hash=hashed_password, role=role)
+            user = User(user_id=user_id, username=user_data['username'], pk=email, password_hash=hashed_password, role=role)
             login_user(user)
 
             return redirect('/')            
@@ -645,6 +643,5 @@ def handle_clamav_connection_error(error):
 
 if __name__ == '__main__':
     with app.app_context():
-        create_dynamodb_index()
         sys.argv = "gunicorn --bind 0.0.0.0:5151 app:app".split()
         sys.exit(run())
