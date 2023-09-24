@@ -95,7 +95,6 @@ bootstrap = Bootstrap(app)
 app.config['SECRET_KEY'] = secret_key
 app.config['UPLOAD_FOLDER'] = 'uploads'
 
-shared_table = dynamodb.Table('tan-dark-goshawkCyclicDB')
 migrate = Migrate(app, dynamodb) 
 logging.basicConfig(level=logging.ERROR)
 logger = logging.getLogger(__name__) 
@@ -187,7 +186,7 @@ class User(UserMixin):
             return None       
     @staticmethod
     def get(role_id):
-        response = shared_table.get_item(Key={'role_id': role_id})
+        response = user_table.get_item(Key={'role_id': role_id})
         role_data = response.get('Item', None)
         return Role(**role_data) if role_data else None
     
@@ -210,7 +209,7 @@ class User(UserMixin):
         self.password_reset_expiration = expiration_time.strftime('%Y-%m-%dT%H:%M:%SZ')
 
         # Update the DynamoDB record
-        shared_table.update_item(
+        user_table.update_item(
             Key={'user_id': self.user_id},
             UpdateExpression='SET password_reset_token = :token, password_reset_expiration = :expiration',
             ExpressionAttributeValues={
@@ -231,7 +230,7 @@ class User(UserMixin):
 
     @classmethod
     def get(cls, user_id):
-        response = shared_table.get_item(Key={'user_id': user_id})
+        response = user_table.get_item(Key={'user_id': user_id})
         user_data = response.get('Item', None)
 
         if user_data:
@@ -349,7 +348,7 @@ def allowed_file(filename):
 @app.route('/', methods=["GET", "POST"])
 def index():
     # Assuming your DynamoDB table stores file information
-    response = shared_table.scan()
+    response = user_table.scan()
     items = response.get('Items', [])
     
     # Transform DynamoDB items into a list of dictionaries
@@ -363,8 +362,6 @@ from boto3.dynamodb.conditions import Key
 # ... other imports ...
 
 dynamodb = boto3.resource('dynamodb', region_name=AWS_REGION)  # Replace with your AWS region
-user_table = dynamodb.Table('tan-dark-goshawkCyclicDB')  # Replace with your DynamoDB table name
-
 # ... other routes and configurations ...
 
 @app.route('/login', methods=['GET', 'POST'])
