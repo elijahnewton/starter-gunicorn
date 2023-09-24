@@ -419,7 +419,7 @@ def register():
                 flash('Account created successfully!', 'success')
 
                 # Log in the newly registered user
-                user = User(sk=user_id, username=user_data['username'], pk=email, password_hash=hashed_password, role=role)
+                user = User(user_id=user_id, username=user_data['username'], pk=email, password_hash=hashed_password, role=role)
                 login_user(user)
 
                 return redirect('/')
@@ -445,7 +445,7 @@ def register():
             flash('Account created successfully!', 'success')
 
             # Log in the newly registered user
-            user = User(sk=user_id, username=user_data['username'], pk=email, password_hash=hashed_password, role=role)
+            user = User(user_id=user_id, username=user_data['username'], pk=email, password_hash=hashed_password, role=role)
             login_user(user)
 
             return redirect('/')            
