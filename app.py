@@ -338,7 +338,7 @@ def login():
                 stored_password_hash = user_data.get('password_hash', None)
 
                 if stored_password_hash and check_password_hash(stored_password_hash, password):
-                    user = User(user_id=user_data['sk'], username=user_data['username'], pk=user_data['pk'], password_hash=stored_password_hash, role_id=user_data['role_id'])
+                    user = User(user_id=user_data['sk'], username=user_data['username'], pk=user_data['pk'], password_hash=stored_password_hash, role_id=user_data['sk'])
                     login_user(user)
                     flash('Logged In successfully!', 'success')
                     return redirect('/')
