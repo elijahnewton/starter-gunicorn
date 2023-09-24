@@ -65,10 +65,6 @@ try:
 except Exception as e:
     print(f'Error creating secondary index: {e}')
 
-    After creating the secondary index, you can use it to query items by email:
-
-python
-
 from botocore.exceptions import ClientError
 
 try:
