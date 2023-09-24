@@ -1,3 +1,7 @@
+"""
+when you see "sk" it implies user_id and "pk" email
+"""
+
 from flask import Flask, render_template, request, redirect, Response, flash, url_for
 from flask_sqlalchemy import SQLAlchemy
 import io, os
@@ -74,7 +78,7 @@ mail = Mail(app)
 
 class User(UserMixin):
     def __init__(self, user_id, username, email, password_hash, role_id):
-        self.user_id = user_id
+        self.sk = user_id
         self.username = username
         self.pk = email
         self.password_hash = password_hash
@@ -88,7 +92,7 @@ class User(UserMixin):
         try:
             table.put_item(
                 Item={
-                    'user_id': user_id,
+                    'sk': user_id,
                     'username': username,
                     'pk': email,
                     'password_hash': password_hash,
@@ -107,7 +111,7 @@ class User(UserMixin):
 
         try:
             response = table.get_item(
-                Key={'user_id': user_id}
+                Key={'sk': user_id}
             )
             user_data = response.get('Item', None)
             return User(**user_data) if user_data else None
@@ -158,7 +162,7 @@ class User(UserMixin):
 
         # Update the DynamoDB record
         user_table.update_item(
-            Key={'user_id': self.user_id},
+            Key={'sk': self.user_id},
             UpdateExpression='SET password_reset_token = :token, password_reset_expiration = :expiration',
             ExpressionAttributeValues={
                 ':token': token,
@@ -198,7 +202,7 @@ class Role:
 def get_user_by_username(username):
     response = dynamodb.get_item(
         TableName='tan-dark-goshawkCyclicDB',
-        Key={'user_id': {'S': username}}
+        Key={'sk': {'S': username}}
     )
     user_data = response.get('Item', None)
     return user_data
@@ -215,7 +219,7 @@ class File:
     def __init__(self, id, filename, user_id, upload_time, file_size, comment):
         self.id = id
         self.filename = filename
-        self.user_id = user_id
+        self.sk = user_id
         self.upload_time = upload_time
         self.file_size = file_size
         self.comment = comment
@@ -225,7 +229,7 @@ class File:
             Item={
                 'id': self.id,
                 'filename': self.filename,
-                'user_id': self.user_id,
+                'sk': self.sk,
                 'upload_time': self.upload_time,
                 'file_size': self.file_size,
                 'comment': self.comment
@@ -243,7 +247,7 @@ class File:
             return File(
                 id=item['id'],
                 filename=item['filename'],
-                user_id=item['user_id'],
+                user_id=item['sk'],
                 upload_time=item['upload_time'],
                 file_size=item['file_size'],
                 comment=item['comment']
@@ -253,14 +257,14 @@ class File:
     @staticmethod
     def get_all_by_user(user_id):
         response = table.query(
-            IndexName='user_id_index',  # Replace with your index name
-            KeyConditionExpression=Key('user_id').eq(user_id)
+            # IndexName='user_id_index',  # Replace with your index name
+            KeyConditionExpression=Key('sk').eq(user_id)
         )
         items = response.get('Items', [])
         return [File(
             id=item['id'],
             filename=item['filename'],
-            user_id=item['user_id'],
+            user_id=item['sk'],
             upload_time=item['upload_time'],
             file_size=item['file_size'],
             comment=item['comment']
@@ -334,7 +338,7 @@ def login():
                 stored_password_hash = user_data.get('password_hash', None)
 
                 if stored_password_hash and check_password_hash(stored_password_hash, password):
-                    user = User(user_id=user_data['user_id'], username=user_data['username'], pk=user_data['email'], password_hash=stored_password_hash, role_id=user_data['role_id'])
+                    user = User(user_id=user_data['sk'], username=user_data['username'], pk=user_data['email'], password_hash=stored_password_hash, role_id=user_data['role_id'])
                     login_user(user)
                     flash('Logged In successfully!', 'success')
                     return redirect('/')
@@ -404,7 +408,7 @@ def register():
                 print(user_id)
                 # Create a new user record in DynamoDB
                 user_data = {
-                    'user_id': user_id,
+                    'sk': user_id,
                     'username': request.form.get('username'),
                     'pk': email,
                     'password_hash': hashed_password,
@@ -415,7 +419,7 @@ def register():
                 flash('Account created successfully!', 'success')
 
                 # Log in the newly registered user
-                user = User(user_id=user_id, username=user_data['username'], pk=email, password_hash=hashed_password, role=role)
+                user = User(sk=user_id, username=user_data['username'], pk=email, password_hash=hashed_password, role=role)
                 login_user(user)
 
                 return redirect('/')
@@ -430,7 +434,7 @@ def register():
 
             # Create a new user record in DynamoDB
             user_data = {
-                'user_id': user_id,
+                'sk': user_id,
                 'username': request.form.get('username'),
                 'pk': email,
                 'password_hash': hashed_password,
@@ -441,7 +445,7 @@ def register():
             flash('Account created successfully!', 'success')
 
             # Log in the newly registered user
-            user = User(user_id=user_id, username=user_data['username'], pk=email, password_hash=hashed_password, role=role)
+            user = User(sk=user_id, username=user_data['username'], pk=email, password_hash=hashed_password, role=role)
             login_user(user)
 
             return redirect('/')            
