@@ -382,6 +382,7 @@ def register():
         email = request.form.get('email')
         password = request.form.get('password')
         hashed_password = generate_password_hash(password)
+        role_id = str(secrets.token_hex(16))
 
         # Fetch the admin user's email from the environment variable
         admin_email = os.environ.get('ADMIN_USER')
@@ -399,12 +400,29 @@ def register():
             else:
                 # Determine the user's role based on their email
                 if email == admin_email:
-                    role = 'admin'
+                    try:
+                        role_data={
+                            'role_id'=role_id,
+                            'role_name'='admin'
+                        }   
+                        user_table.put_item(Item=role_data)
+                        role = 'admin'
+                    else Exception as e:
+                        role = 'admin'
                 else:
-                    role = 'user'
-
+                    try:
+                        role_data={
+                            'role_id'=role_id,
+                            'role_name'='user'
+                        }
+                        user_table.put_item(Item=role_data)
+                        role = 'user'
+                    else Exception as e:
+                        role = 'user'
+                
                 # Generate a unique user_id using secrets.token_hex()
                 user_id = str(secrets.token_hex(16))
+                
                 print(user_id)
                 # Create a new user record in DynamoDB
                 user_data = {
