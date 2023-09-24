@@ -65,24 +65,24 @@ try:
 except Exception as e:
     print(f'Error creating secondary index: {e}')
 
-from botocore.exceptions import ClientError
+# from botocore.exceptions import ClientError
 
-try:
-    response = table.query(
-        IndexName='email-index',
-        KeyConditionExpression=Key('email').eq(email)
-    )
+# try:
+#     response = table.query(
+#         IndexName='email-index',
+#         KeyConditionExpression=Key('email').eq(email)
+#     )
 
-    if response.get('Items'):
-        # Handle the matching items
-        matching_items = response['Items']
-        # Handle or process the matching items as needed
-    else:
-        # Handle the case where no items match the query
-        # There are no items with the specified 'email' attribute value
-except ClientError as e:
-    # Handle query errors
-    print("Error querying DynamoDB:", e)
+#     if response.get('Items'):
+#         # Handle the matching items
+#         matching_items = response['Items']
+#         # Handle or process the matching items as needed
+#     else:
+#         # Handle the case where no items match the query
+#         # There are no items with the specified 'email' attribute value
+# except ClientError as e:
+#     # Handle query errors
+#     print("Error querying DynamoDB:", e)
 
 # ...
 
