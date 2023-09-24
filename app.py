@@ -33,59 +33,6 @@ s3 = boto3.client('s3', region_name=AWS_REGION)
 dynamodb = boto3.resource('dynamodb', region_name=AWS_REGION)
 user_table = dynamodb.Table('tan-dark-goshawkCyclicDB')
 
-index_name = 'email-index'
-
-try:
-    user_table.update(
-        AttributeDefinitions=[
-            {
-                'AttributeName': 'email',
-                'AttributeType': 'S',  # 'S' for string, adjust if needed
-            },
-        ],
-        GlobalSecondaryIndexUpdates=[
-            {
-                'Create': {
-                    'IndexName': index_name,
-                    'KeySchema': [
-                        {
-                            'AttributeName': 'email',
-                            'KeyType': 'HASH',
-                        },
-                    ],
-                    'Projection': {
-                        'ProjectionType': 'ALL',  # Adjust as needed
-                    },
-                },
-            },
-        ],
-    )
-
-    print(f'Secondary index {index_name} created successfully.')
-except Exception as e:
-    print(f'Error creating secondary index: {e}')
-
-# from botocore.exceptions import ClientError
-
-# try:
-#     response = table.query(
-#         IndexName='email-index',
-#         KeyConditionExpression=Key('email').eq(email)
-#     )
-
-#     if response.get('Items'):
-#         # Handle the matching items
-#         matching_items = response['Items']
-#         # Handle or process the matching items as needed
-#     else:
-#         # Handle the case where no items match the query
-#         # There are no items with the specified 'email' attribute value
-# except ClientError as e:
-#     # Handle query errors
-#     print("Error querying DynamoDB:", e)
-
-# ...
-
 basedir = os.path.abspath(os.path.dirname(__file__))
 secret_key = secrets.token_hex(16)
 
@@ -123,6 +70,40 @@ app.config['MAIL_USERNAME'] = MAIL_USERNAME
 app.config['MAIL_PASSWORD'] = MAIL_PASSWORD
 
 mail = Mail(app)
+
+def create_dynamodb_index():
+    dynamodb = boto3.resource('dynamodb', region_name=AWS_REGION)
+    table = dynamodb.Table('tan-dark-goshawkCyclicDB')
+
+    try:
+        # Define your index creation parameters here
+        response = table.update(
+            AttributeDefinitions=[
+                {
+                    'AttributeName': 'email',
+                    'AttributeType': 'S'
+                },
+            ],
+            GlobalSecondaryIndexUpdates=[
+                {
+                    'Create': {
+                        'IndexName': 'email-index',
+                        'KeySchema': [
+                            {
+                                'AttributeName': 'email',
+                                'KeyType': 'HASH'
+                            },
+                        ],
+                        'Projection': {
+                            'ProjectionType': 'ALL'
+                        },
+                    }
+                }
+            ]
+        )
+        print("Index created successfully:", response)
+    except ClientError as e:
+        print("Error creating index:", e)
 
 class User(UserMixin):
     def __init__(self, user_id, username, email, password_hash, role_id):
@@ -697,5 +678,6 @@ def handle_clamav_connection_error(error):
 
 if __name__ == '__main__':
     with app.app_context():
+        create_dynamodb_index()
         sys.argv = "gunicorn --bind 0.0.0.0:5151 app:app".split()
         sys.exit(run())
