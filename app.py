@@ -31,10 +31,10 @@ AWS_SESSION_TOKEN = os.getenv('AWS_SESSION_TOKEN')
 # Initialize Boto3 S3 client
 s3 = boto3.client('s3', region_name=AWS_REGION)
 dynamodb = boto3.resource('dynamodb', region_name=AWS_REGION)
-user_table = dynamodb.Table('tan-dark-goshawkCyclicDB')
+shared_table = dynamodb.Table('tan-dark-goshawkCyclicDB')
 
 user_table = dynamodb.create_table(
-    TableName='tan-dark-goshawkCyclicDB',
+    TableName='MyTable',
     KeySchema=[
         {
             'AttributeName': 'user_id',
@@ -74,6 +74,7 @@ user_table = dynamodb.create_table(
         }
     ]
 )
+print("Table creation response:", user_table)
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 secret_key = secrets.token_hex(16)
@@ -720,6 +721,6 @@ def handle_clamav_connection_error(error):
 
 if __name__ == '__main__':
     with app.app_context():
-        # create_dynamodb_index()
+        create_dynamodb_index()
         sys.argv = "gunicorn --bind 0.0.0.0:5151 app:app".split()
         sys.exit(run())
