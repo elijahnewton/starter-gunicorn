@@ -383,7 +383,7 @@ def privacy_policy():
 # ... other imports and app configuration ...
 def add_role_to_table(role):
     dynamodb = boto3.resource('dynamodb')
-    table = dynamodb.Table('your-table-name-for-roles')
+    table = dynamodb.Table('tan-dark-goshawkCyclicDB')
 
     try:
         table.put_item(
