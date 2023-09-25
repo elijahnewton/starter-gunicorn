@@ -335,7 +335,9 @@ def login():
 
             if response.get('Items'):
                 user_data = response['Items'][0]
-                print(f"{user_data}")
+                role_data = response['Items'][1]
+                all_items = response['Items']
+                print(f"{all_items},{user_data},{role_data}")
                 stored_password_hash = user_data.get('password_hash', None)
 
                 if stored_password_hash and check_password_hash(stored_password_hash, password):
