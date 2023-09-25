@@ -76,27 +76,7 @@ app.config['MAIL_PASSWORD'] = MAIL_PASSWORD
 
 mail = Mail(app)
 
-gsi_name = 'email-index'  # Replace with your desired GSI name
-key_schema = [
-    {
-        'AttributeName': 'pk',
-        'KeyType': 'HASH'  # 'HASH' indicates the primary key attribute
-    }
-]
 
-# ProvisionedThroughput is required for GSIs; adjust the values as needed
-provisioned_throughput = {
-    'ReadCapacityUnits': 5,
-    'WriteCapacityUnits': 5
-}
-
-# Create the GSI
-user_table.global_secondary_index_create(
-    IndexName=gsi_name,
-    KeySchema=key_schema,
-    Projection={'ProjectionType': 'ALL'},
-    ProvisionedThroughput=provisioned_throughput
-)
 
 class User(UserMixin):
     def __init__(self, user_id, username, email, password_hash, role_id):
