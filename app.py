@@ -91,7 +91,7 @@ provisioned_throughput = {
 }
 
 # Create the GSI
-table.global_secondary_index_create(
+user_table.global_secondary_index_create(
     IndexName=gsi_name,
     KeySchema=key_schema,
     Projection={'ProjectionType': 'ALL'},
