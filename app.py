@@ -381,7 +381,22 @@ def privacy_policy():
 
 
 # ... other imports and app configuration ...
+def add_role_to_table(role):
+    dynamodb = boto3.resource('dynamodb')
+    table = dynamodb.Table('your-table-name-for-roles')
 
+    try:
+        table.put_item(
+            Item={
+                'role_id': role.role_id,
+                'name': role.name
+                # Add other role attributes as needed
+            }
+        )
+        print("Role added successfully.")
+    except Exception as e:
+        print(f"Error adding role: {e}")
+        
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     form = RegistrationForm()
@@ -392,7 +407,7 @@ def register():
         email = request.form.get('email')
         password = request.form.get('password')
         hashed_password = generate_password_hash(password)
-        role_id = str(secrets.token_hex(16))
+        
 
         # Fetch the admin user's email from the environment variable
         admin_email = os.environ.get('ADMIN_USER')
@@ -411,21 +426,17 @@ def register():
                 # Determine the user's role based on their email
                 if email == admin_email:
                     try:
-                        role_data={
-                            'role_id':role_id,
-                            'role_name':'admin'
-                        }   
-                        user_table.put_item(Item=role_data)
+                        role_id = str(secrets.token_hex(16))
+                        new_role=Role(role_name='admin',role_id=role_id)   
+                        add_role_to_table(new_role)
                         role = 'admin'
                     except Exception as e:
                         role = 'admin'
                 else:
                     try:
-                        role_data={
-                            'role_id':role_id,
-                            'role_name':'user'
-                        }
-                        user_table.put_item(Item=role_data)
+                        role_id = str(secrets.token_hex(16))
+                        new_role=Role(role_name='user',role_id=role_id)   
+                        add_role_to_table(new_role)
                         role = 'user'
                     except Exception as e:
                         role = 'user'
